@@ -47,7 +47,7 @@ function getNewBackground()
 end
 
 function incrementSize()
-
+	
 end
 
 function incrementSpeed()
