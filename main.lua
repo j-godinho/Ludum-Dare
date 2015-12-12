@@ -19,7 +19,6 @@ function love.load()
 
   playerImage = love.graphics.newImage("nave.png")
   backgroundImage = love.graphics.newImage("background.jpg")
-	bulletImage = love.graphics.newImage("bullet.png")
   enemyImage = love.graphics.newImage("enemy.png")
 
   coolFont = love.graphics.newFont("ProggySquareTT.ttf", 40)
@@ -45,7 +44,7 @@ function love.update(dt)
 
 
 		if math.random() < 0.05 then
-			local newEnemy = {x=math.random()*800 , y= 100}
+			local newEnemy = {x=800, y=math.random()*800}
 			table.insert(enemies, newEnemy)
 		end
 
@@ -59,18 +58,9 @@ function love.update(dt)
 		end
 
 		for i=1, #enemies do
-			if enemies[i].x<player.x then
-				enemies[i].x=enemies[i].x+enemySpeed*dt
-			elseif enemies[i].x>player.x then
-				enemies[i].x=enemies[i].x-enemySpeed*dt
-			end
-
-			if enemies[i].y<player.y then
-				enemies[i].y=enemies[i].y+enemySpeed*dt
-			elseif enemies[i].y>player.y then
-				enemies[i].y=enemies[i].y-enemySpeed*dt
-			end
+			enemies[i].x=enemies[i].x-enemySpeed*dt
 		end
+
 	elseif(currentState=="gameover")then
 		if love.keyboard.isDown("k") then
 			startGame()
@@ -86,7 +76,7 @@ function love.draw()
 							love.mouse.getX()-player.x),1,1, playerImage:getWidth()/2, playerImage:getHeight()/2)
 
 		for i=1, #enemies do
-			love.graphics.draw(enemyImage, enemies[i].x, enemies[i].y, math.atan2(player.y-enemies[i].y,player.x-enemies[i].x)+math.pi)
+			love.graphics.draw(enemyImage, enemies[i].x, enemies[i].y)
 		end
 
 		love.graphics.print(player.score, 20,20)
