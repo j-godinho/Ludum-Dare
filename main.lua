@@ -265,20 +265,23 @@ end
 
 
 function clean()
-	for i=1, #enemies do
-		if enemies[i].x==-20 then
-			table.remove(enemies, enemies[i])
+	for i=#enemies,1,-1  do
+		if enemies[i].x==-30 then
+			table.remove(enemies, i)
 		end
 	end
-	for i=1, #bordersTop do
-		if bordersTop[i].x==-20 then
-			table.remove(bordersTop, bordersTop[i])
+	for i=#bordersTop,1,-1 do
+		if bordersTop[i].x==-30 then
+			table.remove(bordersTop, i)
 		end
 	end
-	for i=1, #bordersDown do
-		if bordersDown[i].x==-20 then
-			table.remove(bordersDown, bordersDown[i])
+	for i=#bordersDown,1,-1  do
+		if bordersDown[i].x==-30 then
+			table.remove(bordersDown, i)
 		end
 	end
+
+
+
 
 end
