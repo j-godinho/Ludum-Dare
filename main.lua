@@ -102,23 +102,47 @@ function love.update(dt)
 			end
 		end
 
+
 		for i=1, #enemies do
 			enemies[i].x=enemies[i].x-enemySpeed*dt
 		end
 
-		local newBorderTop = {x=800, y=0, width=5, height=10}
+		local newBorderTop = {x=800, y=0, width=3, height=10}
 		table.insert(bordersTop, newBorderTop)
+
+		
+		local newBorderDown = {x=800, y=600, width=3, height=10}
+		table.insert(bordersDown, newBorderDown)
+
 
 		for i=1, #bordersTop do
 			bordersTop[i].x=bordersTop[i].x-enemySpeed*dt
 		end
 
-		local newBorderDown = {x=800, y=600, width=5, height=10}
-		table.insert(bordersDown, newBorderDown)
-
 		for i=1, #bordersDown do
 			bordersDown[i].x=bordersDown[i].x-enemySpeed*dt
 		end
+
+		for i=#bordersDown,1,-1 do
+			if checkCollision(bordersDown[i].x, bordersDown[i].y, bordersDown[i].width, bordersDown[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
+				--gameover
+				if player.lifes > 1 then
+					player.lifes = player.lifes - 1
+				end
+			end
+		end
+
+		for i=#bordersTop,1,-1 do
+			if checkCollision(bordersTop[i].x, bordersTop[i].y, bordersTop[i].width, bordersTop[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
+				--gameover
+				if player.lifes > 1 then
+					player.lifes = player.lifes - 1
+				end
+			end
+		end
+
+		clean()
+
 
 
 	elseif currentState=="horizontalGame" then
@@ -153,6 +177,9 @@ function love.draw()
 		love.graphics.print("Score: "..player.score, 20,20)
 		love.graphics.print("Jóias: "..player.lifes, 250, 20)
 
+
+		love.graphics.print("enemies: "..#enemies, 50,50)
+
 	elseif currentState == "gameover" then
 		love.graphics.print("GameOver, press K to start again", 100, 100)
 		love.graphics.print("Score: " .. player.score, 20,200)
@@ -160,3 +187,24 @@ function love.draw()
 
 
 end
+
+
+function clean()
+	for i=1, #enemies do
+		if enemies[i].x==-20 then
+			table.remove(enemies, enemies[i])
+		end			
+	end
+	for i=1, #bordersTop do
+		if bordersTop[i].x==-20 then
+			table.remove(bordersTop, bordersTop[i])
+		end			
+	end
+	for i=1, #bordersDown do
+		if bordersDown[i].x==-20 then
+			table.remove(bordersDown, bordersDown[i])
+		end			
+	end
+
+end
+
