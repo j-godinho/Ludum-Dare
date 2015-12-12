@@ -14,7 +14,8 @@ function startGame()
 	enemySpeed=100
 	currentState = "verticalGame"
 	enemySize=20
-	borders={}
+	bordersTop={}
+	bordersDown={}
 	ratio=1
 	items = {}
 	itemsSpeed=100
@@ -55,7 +56,6 @@ function love.update(dt)
 		if love.keyboard.isDown("c")then
 			currentState = "horizontalGame"
 		end
-
 	elseif (currentState =="horizontalGame")then
 		if player.x>love.graphics.getWidth()/2 and player.x<love.graphics.getWidth()then
 			player.x=player.x+gravitySpeed*dt
@@ -76,6 +76,13 @@ function love.update(dt)
 			currentState = "verticalGame"
 		end
 
+	elseif(currentState=="gameover")then
+		if love.keyboard.isDown("k") then
+			startGame()
+		end
+	end
+
+	if currentState == "verticalGame" then
 
 		if math.random() < 0.05 then
 			local newEnemy = {x=800 , y= math.random()*800, width=20, height=20}
@@ -99,23 +106,29 @@ function love.update(dt)
 			enemies[i].x=enemies[i].x-enemySpeed*dt
 		end
 
+		local newBorderTop = {x=800, y=0, width=5, height=10}
+		table.insert(bordersTop, newBorderTop)
 
-		local newBorderTop = {x=800, y=0, width=5, height=50*math.random()}
-		table.insert(borders, newBorderTop)
+		for i=1, #bordersTop do
+			bordersTop[i].x=bordersTop[i].x-enemySpeed*dt
+		end
 
-		for i=1, #borders do
-			borders[i].x=borders[i].x-enemySpeed*dt
+		local newBorderDown = {x=800, y=600, width=5, height=10}
+		table.insert(bordersDown, newBorderDown)
+
+		for i=1, #bordersDown do
+			bordersDown[i].x=bordersDown[i].x-enemySpeed*dt
 		end
 
 
-
-	elseif(currentState=="gameover")then
-		if love.keyboard.isDown("k") then
-			startGame()
-		end
+	elseif currentState=="horizontalGame" then
+		
+	elseif currentState=="gameover" then
 
 	end
+		
 end
+
 
 function love.draw()
 	if currentState == "horizontalGame" or currentState == "verticalGame" then
@@ -129,9 +142,12 @@ function love.draw()
 			love.graphics.rectangle("fill", enemies[i].x-enemies[i].width/2, enemies[i].y-enemies[i].height/2, enemies[i].width, enemies[i].height)
 		end
 
+		for i=1, #bordersTop do
+			love.graphics.rectangle("fill", bordersTop[i].x-bordersTop[i].width/2, bordersTop[i].y-bordersTop[i].height/2, bordersTop[i].width, bordersTop[i].height)
+		end
 
-		for i=1, #borders do
-			love.graphics.rectangle("fill", borders[i].x-borders[i].width/2, borders[i].y-borders[i].height/2, borders[i].width, borders[i].height)
+		for i=1, #bordersDown do
+			love.graphics.rectangle("fill", bordersDown[i].x-bordersDown[i].width/2, bordersDown[i].y-bordersDown[i].height/2, bordersDown[i].width, bordersDown[i].height)
 		end
 
 		love.graphics.print("Score: "..player.score, 20,20)
