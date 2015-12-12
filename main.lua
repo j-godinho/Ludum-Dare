@@ -42,12 +42,12 @@ function love.update(dt)
 		if player.y<=love.graphics.getHeight()/2 and player.y>0 then
 				player.y=player.y-gravitySpeed*dt
 		end
-		if love.keyboard.isDown("up") and player.y>0 then
+		if (love.keyboard.isDown("up") or love.keyboard.isDown("w")) and player.y>0 then
 			player.y=player.y-player.speed*dt
 		end
 
 
-		if love.keyboard.isDown("down") and player.y<love.graphics.getHeight() then
+		if (love.keyboard.isDown("down") or love.keyboard.isDown("s")) and player.y<love.graphics.getHeight() then
 			player.y=player.y+player.speed*dt
 		end
 
@@ -64,10 +64,10 @@ function love.update(dt)
 				player.x=player.x-gravitySpeed*dt
 		end
 
-		if love.keyboard.isDown("left") and player.x>0 then
+		if (love.keyboard.isDown("left") or love.keyboard.isDown("a")) and player.x>0 then
 			player.x=player.x-player.speed*dt
 		end
-		if love.keyboard.isDown("right") and player.x<love.graphics.getWidth() then
+		if (love.keyboard.isDown("right") or love.keyboard.isDown("d")) and player.x<love.graphics.getWidth() then
 			player.x=player.x+player.speed*dt
 		end
 
