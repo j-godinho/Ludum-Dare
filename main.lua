@@ -13,6 +13,11 @@ function startGame()
 	enemies = {}
 	enemySpeed=100
 	currentState = "verticalGame"
+	enemySize=20
+	borders={}
+	ratio=1
+
+
 end
 
 function love.load()
@@ -20,8 +25,6 @@ function love.load()
 
   playerImage = love.graphics.newImage("6.png")
   backgroundImage = love.graphics.newImage("background.jpg")
-
-  enemyImage = love.graphics.newImage("enemy.png")
 
   coolFont = love.graphics.newFont("ProggySquareTT.ttf", 40)
   love.graphics.setFont(coolFont)
@@ -52,36 +55,6 @@ function love.update(dt)
 			currentState = "horizontalGame"
 		end
 
-
-		--[[
-		if math.random() < 0.05 then
-			local newEnemy = {x=math.random()*800 , y= 100}
-			table.insert(enemies, newEnemy)
-		end
-
-
-		for i=#enemies,1,-1 do
-			if checkCollision(enemies[i].x, enemies[i].y, enemyImage:getWidth(), enemyImage:getHeight(), player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
-				--gameover
-				currentState="gameover"
-
-			end
-		end
-
-		for i=1, #enemies do
-			if enemies[i].x<player.x then
-				enemies[i].x=enemies[i].x+enemySpeed*dt
-			elseif enemies[i].x>player.x then
-				enemies[i].x=enemies[i].x-enemySpeed*dt
-			end
-
-			if enemies[i].y<player.y then
-				enemies[i].y=enemies[i].y+enemySpeed*dt
-			elseif enemies[i].y>player.y then
-				enemies[i].y=enemies[i].y-enemySpeed*dt
-			end
-		end--]]
-
 	elseif (currentState =="horizontalGame")then
 		if player.x>love.graphics.getWidth()/2 and player.x<love.graphics.getWidth()then
 			player.x=player.x+gravitySpeed*dt
@@ -101,6 +74,16 @@ function love.update(dt)
 		if love.keyboard.isDown("c")then
 			currentState = "verticalGame"
 		end
+
+		local newBorderTop = {x=800, y=0, width=5, height=50*math.random()}
+		table.insert(borders, newBorderTop)
+
+		for i=1, #borders do
+			borders[i].x=borders[i].x-enemySpeed*dt
+		end
+
+
+
 	elseif(currentState=="gameover")then
 		if love.keyboard.isDown("k") then
 			startGame()
@@ -118,7 +101,12 @@ function love.draw()
 							playerImage:getHeight()/2)
 
 		for i=1, #enemies do
-			love.graphics.draw(enemyImage, enemies[i].x, enemies[i].y, math.atan2(player.y-enemies[i].y,player.x-enemies[i].x)+math.pi)
+			love.graphics.rectangle("fill", enemies[i].x-enemies[i].width/2, enemies[i].y-enemies[i].height/2, enemies[i].width, enemies[i].height)
+		end
+
+
+		for i=1, #borders do
+			love.graphics.rectangle("fill", borders[i].x-borders[i].width/2, borders[i].y-borders[i].height/2, borders[i].width, borders[i].height)
 		end
 
 		love.graphics.print(player.score, 20,20)
