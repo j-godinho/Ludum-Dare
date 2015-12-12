@@ -20,7 +20,6 @@ function love.load()
 
   playerImage = love.graphics.newImage("nave.png")
   backgroundImage = love.graphics.newImage("background.jpg")
-  bulletImage = love.graphics.newImage("bullet.png")
   enemyImage = love.graphics.newImage("enemy.png")
 
   coolFont = love.graphics.newFont("ProggySquareTT.ttf", 40)
@@ -45,28 +44,6 @@ function love.update(dt)
 		end
 
 
-
-		if love.mouse.isDown("l") then
-			if player.canShoot then
-				local shootSound = love.audio.newSource("shoot.wav", "static")
-				shootSound:play()
-				newBullet ={x=player.x, y=player.y}
-
-				local angle = math.atan2(love.mouse.getY()-player.y,love.mouse.getX()-player.x)
-
-				newBullet.dirX = player.bulletSpeed*math.cos(angle)
-				newBullet.dirY = player.bulletSpeed*math.sin(angle)
-
-				table.insert(bullets, newBullet)
-
-				player.canShoot=false
-
-			end
-		else
-			player.canShoot=true
-		end
-
-
 		if math.random() < 0.05 then
 			local newEnemy = {x=math.random()*800 , y= 100}
 			table.insert(enemies, newEnemy)
@@ -80,21 +57,6 @@ function love.update(dt)
 
 			end
 		end
-
-		for i, bullet in ipairs(bullets) do
-			bullet.x=bullet.x+bullet.dirX*dt
-			bullet.y=bullet.y+bullet.dirY*dt
-			for u=#enemies,1,-1 do
-				if checkCollision(bullet.x, bullet.y, bulletImage:getWidth(), bulletImage:getHeight(), enemies[u].x, enemies[u].y, enemyImage:getWidth(), enemyImage:getHeight())==true then
-					player.score = player.score +1
-					local explosionSound = love.audio.newSource("explosion.wav", "static")
-					explosionSound:play()
-					table.remove(enemies, u)
-				end
-			end
-		end
-
-
 
 		for i=1, #enemies do
 			if enemies[i].x<player.x then
@@ -122,10 +84,6 @@ function love.draw()
 		love.graphics.draw(playerImage, player.x, player.y,
 							math.atan2(love.mouse.getY()-player.y,
 							love.mouse.getX()-player.x),1,1, playerImage:getWidth()/2, playerImage:getHeight()/2)
-
-		for i=1, #bullets do
-			love.graphics.draw(bulletImage, bullets[i].x, bullets[i].y)
-		end
 
 		for i=1, #enemies do
 			love.graphics.draw(enemyImage, enemies[i].x, enemies[i].y, math.atan2(player.y-enemies[i].y,player.x-enemies[i].x)+math.pi)
