@@ -1,74 +1,124 @@
+-- Verifica se dois retangulos colidem
+function checkCollision(x1, y1, w1, h1, x2, y2, w2, h2)
+  return x1 < x2 + w2 and
+    x2 < x1 + w1 and
+    y1 < y2 + h2 and
+    y2 < y1 + h1
+end
+
+-- Funcao que inicializa as variaveis do jogo
+function startGame()
+	player = {x=300, y=400, score=0, speed=200, bulletSpeed=400, canShoot=true}
+	bullets = {}
+	enemies = {}
+	enemySpeed=100
+	currentState = "game"
+end
+
 function love.load()
-	love.physics.setMeter(64)
-	world = love.physics.newWorld(0,9.8*64, true)
+  startGame()
 
-	objects = {}
+  playerImage = love.graphics.newImage("nave.png")
+  backgroundImage = love.graphics.newImage("background.jpg")
+  bulletImage = love.graphics.newImage("bullet.png")
+  enemyImage = love.graphics.newImage("enemy.png")
 
-	objects.ground = {}
-	objects.ground.body = love.physics.newBody(world, 800/2, 600)
-	objects.ground.shape = love.physics.newRectangleShape(800,25)
-	objects.ground.fixture = love.physics.newFixture(objects.ground.body, objects.ground.shape,1)
-
-
-	objects.ceiling = {}
-	objects.ceiling.body = love.physics.newBody(world, 800/2, 0)
-	objects.ceiling.shape = love.physics.newRectangleShape(800,25)
-	objects.ceiling.fixture = love.physics.newFixture(objects.ceiling.body, objects.ceiling.shape,1)
-
-
-	objects.left = {}
-	objects.left.body = love.physics.newBody(world, 0, 600/2)
-	objects.left.shape = love.physics.newRectangleShape(25,800)
-	objects.left.fixture = love.physics.newFixture(objects.left.body, objects.left.shape,1)
-
-
-	objects.right = {}
-	objects.right.body = love.physics.newBody(world, 800,600/2)
-	objects.right.shape = love.physics.newRectangleShape(25,800)
-	objects.right.fixture = love.physics.newFixture(objects.right.body, objects.right.shape,1)
-
-	objects.ball = {}
-	objects.ball.body = love.physics.newBody(world, 800/2, 600/2, "dynamic")
-	objects.ball.shape = love.physics.newCircleShape(20)
-	objects.ball.fixture = love.physics.newFixture(objects.ball.body, objects.ball.shape,1)
-	objects.ball.fixture:setRestitution(0.9)
-
-	objects.square = {}
-	objects.square.body = love.physics.newBody(world, 400,400, "dynamic")
-	objects.square.shape = love.physics.newRectangleShape(25,25)
-	objects.square.fixture = love.physics.newFixture(objects.square.body, objects.square.shape,1)
-
-
-
+  coolFont = love.graphics.newFont("ProggySquareTT.ttf", 40)
+  love.graphics.setFont(coolFont)
 
 end
 
 function love.update(dt)
-	world:update(dt)
+	if currentState == "game" then
+		--Detectar Input
+		if love.keyboard.isDown("w") and player.y>0 then
+			player.y=player.y-player.speed*dt
+		end
+		if love.keyboard.isDown("a") and player.x>0 then
+			player.x=player.x-player.speed*dt
+		end
+		if love.keyboard.isDown("s") and player.y<love.graphics.getHeight() then
+			player.y=player.y+player.speed*dt
+		end
+		if love.keyboard.isDown("d") and player.x<love.graphics.getWidth() then
+			player.x=player.x+player.speed*dt
+		end
 
 
-	if love.keyboard.isDown("w") then
-		objects.ball.body:applyForce(0, -400)
-	elseif love.keyboard.isDown("s") then
-		objects.ball.body:applyForce(0,400)
-	elseif love.keyboard.isDown("a") then
-		objects.ball.body:applyForce(-400,0)
-	elseif love.keyboard.isDown("d") then
-		objects.ball.body:applyForce(400,0)
-	elseif love.keyboard.isDown("w") and love.keyboard.isDown("d") then
-		objects.ball.body:applyForce(400,400)
-	elseif love.keyboard.isDown("w") and love.keyboard.isDown("a") then
-		objects.ball.body:applyForce(-400,400)
 
-	elseif love.keyboard.isDown("s") and love.keyboard.isDown("d") then
-		objects.ball.body:applyForce(400,-400)
-	elseif love.keyboard.isDown("s") and love.keyboard.isDown("a") then
-		objects.ball.body:applyForce(-400,-400)
+		if love.mouse.isDown("l") then
+			if player.canShoot then
+				local shootSound = love.audio.newSource("shoot.wav", "static")
+				shootSound:play()
+				newBullet ={x=player.x, y=player.y}
+
+				local angle = math.atan2(love.mouse.getY()-player.y,love.mouse.getX()-player.x)
+
+				newBullet.dirX = player.bulletSpeed*math.cos(angle)
+				newBullet.dirY = player.bulletSpeed*math.sin(angle)
+
+				table.insert(bullets, newBullet)
+
+				player.canShoot=false
+
+			end
+		else
+			player.canShoot=true
+		end
+
+
+		if math.random() < 0.05 then
+			local newEnemy = {x=math.random()*800 , y= 100}
+			table.insert(enemies, newEnemy)
+		end
+
+
+		for i=#enemies,1,-1 do
+			if checkCollision(enemies[i].x, enemies[i].y, enemyImage:getWidth(), enemyImage:getHeight(), player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
+				--gameover
+				currentState="gameover"
+
+			end
+		end
+
+		for i, bullet in ipairs(bullets) do
+			bullet.x=bullet.x+bullet.dirX*dt
+			bullet.y=bullet.y+bullet.dirY*dt
+			for u=#enemies,1,-1 do
+				if checkCollision(bullet.x, bullet.y, bulletImage:getWidth(), bulletImage:getHeight(), enemies[u].x, enemies[u].y, enemyImage:getWidth(), enemyImage:getHeight())==true then
+					player.score = player.score +1
+					local explosionSound = love.audio.newSource("explosion.wav", "static")
+					explosionSound:play()
+					table.remove(enemies, u)
+				end
+			end
+		end
+
+
+
+		for i=1, #enemies do
+			if enemies[i].x<player.x then
+				enemies[i].x=enemies[i].x+enemySpeed*dt
+			elseif enemies[i].x>player.x then
+				enemies[i].x=enemies[i].x-enemySpeed*dt
+			end
+
+			if enemies[i].y<player.y then
+				enemies[i].y=enemies[i].y+enemySpeed*dt
+			elseif enemies[i].y>player.y then
+				enemies[i].y=enemies[i].y-enemySpeed*dt
+			end
+		end
+	elseif(currentState=="gameover")then
+		if love.keyboard.isDown("k") then
+			startGame()
+		end
+>>>>>>> origin/master
 	end
-end
 
-function love.draw()
 
+
+<<<<<<< HEAD
 
 	love.graphics.setColor(125,30,72)
 	love.graphics.polygon("fill", objects.ground.body:getWorldPoints(objects.ground.shape:getPoints()))
@@ -81,5 +131,33 @@ function love.draw()
 
 	love.graphics.setColor(72,125,30)
 	love.graphics.circle("fill", objects.ball.body:getX(), objects.ball.body:getY(), objects.ball.shape:getRadius())
+
+=======
+
+>>>>>>> origin/master
+end
+
+function love.draw()
+	if currentState == "game" then
+		love.graphics.draw(backgroundImage, 0, 0)
+		love.graphics.draw(playerImage, player.x, player.y,
+							math.atan2(love.mouse.getY()-player.y,
+							love.mouse.getX()-player.x),1,1, playerImage:getWidth()/2, playerImage:getHeight()/2)
+
+		for i=1, #bullets do
+			love.graphics.draw(bulletImage, bullets[i].x, bullets[i].y)
+		end
+
+		for i=1, #enemies do
+			love.graphics.draw(enemyImage, enemies[i].x, enemies[i].y, math.atan2(player.y-enemies[i].y,player.x-enemies[i].x)+math.pi)
+		end
+
+		love.graphics.print(player.score, 20,20)
+
+	elseif currentState == "gameover" then
+		love.graphics.print("GameOver, press K to start again", 100, 100)
+		love.graphics.print("Score: " .. player.score, 20,200)
+	end
+
 
 end
