@@ -20,13 +20,15 @@ function startGame()
 	items = {}
 	itemsSpeed=100
 	itemSize = 15
+	timeCount = 0
 end
 
 function love.load()
+
   startGame()
 
   playerImage = love.graphics.newImage("6.png")
-  backgroundImage = love.graphics.newImage("background.jpg")
+  backgroundImage = love.graphics.newImage("background2.png")
 
   coolFont = love.graphics.newFont("ProggySquareTT.ttf", 40)
   love.graphics.setFont(coolFont)
@@ -34,6 +36,16 @@ function love.load()
 end
 
 function love.update(dt)
+	timeCount = timeCount + 1
+	player.score = player.score + 1
+	enemySize = enemySize + 10
+	if timeCount == 50 then
+		backgroundImage = love.graphics.newImage("background.jpg")
+	elseif timeCount == 100 then
+		backgroundImage = love.graphics.newImage("background2.png")
+		timeCount = 0
+	end
+
 	if currentState == "verticalGame" then
 		--Detectar Input
 
@@ -95,8 +107,10 @@ function love.update(dt)
 				--gameover
 				if player.lifes > 1 then
 					player.lifes = player.lifes - 1
-				end
-				if player.lifes == 1 then
+					player.x = love.graphics.getWidth()/2
+					player.y= love.graphics.getHeight()/2
+
+				elseif player.lifes == 1 then
 					currentState="gameover"
 				end
 			end
@@ -146,11 +160,11 @@ function love.update(dt)
 
 
 	elseif currentState=="horizontalGame" then
-		
+
 	elseif currentState=="gameover" then
 
 	end
-		
+
 end
 
 
