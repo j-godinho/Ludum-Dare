@@ -25,6 +25,7 @@ function startGame()
 	verticalBoolean = true
 	horizontalCount = 0
 	horizontalBoolean = false
+	looseCount = 0
 	backgroundSound = love.audio.newSource("Careless.mp3")
 	backgroundSound:play()
 end
@@ -47,7 +48,7 @@ function getNewBackground()
 end
 
 function incrementSize()
-	
+
 end
 
 function incrementSpeed()
@@ -152,6 +153,7 @@ function love.update(dt)
 					player.lifes = player.lifes - 1
 					player.x = love.graphics.getWidth()/2
 					player.y= love.graphics.getHeight()/2
+					currentState = "looseLife"
 
 				elseif player.lifes == 1 then
 					currentState="gameover"
@@ -218,8 +220,13 @@ function love.update(dt)
 
 	elseif currentState=="gameover" then
 
+	elseif currentState=="looseLife" then
+		looseCount = looseCount+1
+		if looseCount ==30 then
+			looseCount=0
+			currentState = "verticalGame"
+		end
 	end
-
 end
 
 
