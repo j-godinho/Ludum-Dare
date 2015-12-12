@@ -51,7 +51,7 @@ function getNewBackground()
 end
 
 function incrementSize()
-
+  player.speed = player.speed + 10
 end
 
 function incrementSpeed()
@@ -83,8 +83,8 @@ function love.update(dt)
 	end
 
 	if horizontalCount == 70 then
-		horizontalCount = false
-		verticalCount = true
+		horizontalBoolean = false
+    verticalBoolean = true
 		currentState = "verticalGame"
 		horizontalCount = 0
 	end
@@ -107,6 +107,10 @@ function love.update(dt)
 		if (love.keyboard.isDown("down") or love.keyboard.isDown("s")) and player.y<love.graphics.getHeight() then
 			player.y=player.y+player.speed*dt
 		end
+
+    --if (love.keyboard.isDown("up") or love.keyboard.isDown("w")) and (love.keyboard.isDown("down") or love.keyboard.isDown("s")) then
+      --player.y = math.abs(player.y - love.graphics.getHeight())
+    --end
 
 		if love.keyboard.isDown("c")then
 			currentState = "horizontalGame"
