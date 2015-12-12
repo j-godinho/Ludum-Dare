@@ -47,10 +47,15 @@ function getNewBackground()
 end
 
 function incrementSize()
-	player.speed = player.speed + 100
+
 end
 
-
+function incrementSpeed()
+	player.speed = player.speed + 100
+end
+function deacreaseSpeed()
+	player.speed = player.speed - 50
+end
 function love.update(dt)
 	timeCount = timeCount + 1
 	if verticalBoolean then
