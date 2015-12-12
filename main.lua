@@ -75,6 +75,22 @@ function love.update(dt)
 			currentState = "verticalGame"
 		end
 
+
+		
+		if math.random() < 0.05 then
+			local newEnemy = {x=math.random()*800 , y= 100}
+			table.insert(enemies, newEnemy)
+		end
+
+
+		for i=#enemies,1,-1 do
+			if checkCollision(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
+				--gameover
+				currentState="gameover"
+
+			end
+		end
+
 		local newBorderTop = {x=800, y=0, width=5, height=50*math.random()}
 		table.insert(borders, newBorderTop)
 
