@@ -113,28 +113,7 @@ function love.update(dt)
 		if love.keyboard.isDown("k") then
 			startGame()
 		end
->>>>>>> origin/master
 	end
-
-
-
-<<<<<<< HEAD
-
-	love.graphics.setColor(125,30,72)
-	love.graphics.polygon("fill", objects.ground.body:getWorldPoints(objects.ground.shape:getPoints()))
-	love.graphics.polygon("fill", objects.ceiling.body:getWorldPoints(objects.ceiling.shape:getPoints()))
-	love.graphics.polygon("fill", objects.left.body:getWorldPoints(objects.left.shape:getPoints()))
-	love.graphics.polygon("fill", objects.right.body:getWorldPoints(objects.right.shape:getPoints()))
-
-	love.graphics.setColor(255,255,255)
-	love.graphics.polygon("fill", objects.square.body:getWorldPoints(objects.square.shape:getPoints()))
-
-	love.graphics.setColor(72,125,30)
-	love.graphics.circle("fill", objects.ball.body:getX(), objects.ball.body:getY(), objects.ball.shape:getRadius())
-
-=======
-
->>>>>>> origin/master
 end
 
 function love.draw()
