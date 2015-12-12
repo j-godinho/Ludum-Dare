@@ -8,7 +8,7 @@ end
 
 -- Funcao que inicializa as variaveis do jogo
 function startGame()
-	player = {x=300, y=300, score=0, speed=400, bulletSpeed=400}
+	player = {x=300, y=300, score=0, speed=400, bulletSpeed=400, lifes = 3}
 	gravitySpeed = 200
 	enemies = {}
 	enemySpeed=100
@@ -18,6 +18,7 @@ function startGame()
 	ratio=1
 	items = {}
 	itemsSpeed=100
+	itemSize = 15
 end
 
 function love.load()
@@ -85,8 +86,12 @@ function love.update(dt)
 		for i=#enemies,1,-1 do
 			if checkCollision(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
 				--gameover
-				currentState="gameover"
-
+				if player.lifes > 1 then
+					player.lifes = player.lifes - 1
+				end
+				if player.lifes == 1 then
+					currentState="gameover"
+				end
 			end
 		end
 
@@ -129,7 +134,8 @@ function love.draw()
 			love.graphics.rectangle("fill", borders[i].x-borders[i].width/2, borders[i].y-borders[i].height/2, borders[i].width, borders[i].height)
 		end
 
-		love.graphics.print(player.score, 20,20)
+		love.graphics.print("Score: "..player.score, 20,20)
+		love.graphics.print("Jóias: "..player.lifes, 250, 20)
 
 	elseif currentState == "gameover" then
 		love.graphics.print("GameOver, press K to start again", 100, 100)
