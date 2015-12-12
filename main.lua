@@ -8,7 +8,8 @@ end
 
 -- Funcao que inicializa as variaveis do jogo
 function startGame()
-	player = {x=300, y=400, score=0, speed=200, bulletSpeed=400}
+	player = {x=300, y=400, score=0, speed=200, bulletSpeed=400, canShoot=true}
+	bullets = {}
 	enemies = {}
 	enemySpeed=100
 	currentState = "game"
