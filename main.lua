@@ -21,6 +21,12 @@ function startGame()
 	itemsSpeed=100
 	itemSize = 15
 	timeCount = 0
+	verticalCount = 0
+	verticalBoolean = true
+	horizontalCount = 0
+	horizontalBoolean = false
+	backgroundSound = love.audio.newSource("Careless.mp3")
+	backgroundSound:play()
 end
 
 function love.load()
@@ -29,26 +35,54 @@ function love.load()
 
   playerImage = love.graphics.newImage("6.png")
   backgroundImage = love.graphics.newImage("background2.png")
-
+	incrementSizeImage = love.graphics.newImage("incrSize.png")
   coolFont = love.graphics.newFont("ProggySquareTT.ttf", 40)
   love.graphics.setFont(coolFont)
 
 end
 
+function getNewBackground()
+	number = love.math.random(1, 5)
+	backgroundImage = love.graphics.newImage("background"..number..".jpg")
+end
+
+function incrementSize()
+	player.speed = player.speed + 100
+end
+
+
 function love.update(dt)
 	timeCount = timeCount + 1
-	player.score = player.score + 1
+	if verticalBoolean then
+		verticalCount = verticalCount + 1
+	end
+	if horizontalBoolean then
+		horizontalCount = horizontalCount + 1
+	end
+
 	enemySize = enemySize + 10
 	if timeCount == 50 then
-		backgroundImage = love.graphics.newImage("background.jpg")
-	elseif timeCount == 100 then
-		backgroundImage = love.graphics.newImage("background2.png")
+		getNewBackground()
+		--getNewEnemyColor()
 		timeCount = 0
+	end
+	if verticalCount == 350 then
+		verticalBoolean = false
+		horizontalBoolean = true
+		currentState = "horizontalGame"
+		verticalCount = 0
+	end
+
+	if horizontalCount == 70 then
+		horizontalCount = false
+		verticalCount = true
+		currentState = "verticalGame"
+		horizontalCount = 0
 	end
 
 	if currentState == "verticalGame" then
 		--Detectar Input
-
+		player.score = player.score + 1
 		if player.y>love.graphics.getHeight()/2 and player.y<love.graphics.getHeight()then
 			player.y=player.y+gravitySpeed*dt
 		end
@@ -101,6 +135,10 @@ function love.update(dt)
 			table.insert(enemies, newEnemy)
 		end
 
+		if math.random() < 0.05 then
+			local newItem = {x=800, y=math.random()*800, width=20, height=20}
+			table.insert(items, newItem)
+		end
 
 		for i=#enemies,1,-1 do
 			if checkCollision(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
@@ -116,6 +154,18 @@ function love.update(dt)
 			end
 		end
 
+		for i=#items, 1, -1 do
+			if checkCollision(items[i].x, items[i].y, items[i].width, items[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
+
+					table.remove(items, i)
+					incrementSize()
+			end
+		end
+
+		for i=1, #items do
+			items[i].x = items[i].x - itemsSpeed*dt
+		end
+
 
 		for i=1, #enemies do
 			enemies[i].x=enemies[i].x-enemySpeed*dt
@@ -124,7 +174,7 @@ function love.update(dt)
 		local newBorderTop = {x=800, y=0, width=3, height=10}
 		table.insert(bordersTop, newBorderTop)
 
-		
+
 		local newBorderDown = {x=800, y=600, width=3, height=10}
 		table.insert(bordersDown, newBorderDown)
 
@@ -170,6 +220,7 @@ end
 
 function love.draw()
 	if currentState == "horizontalGame" or currentState == "verticalGame" then
+
 		love.graphics.draw(backgroundImage, 0, 0)
 		love.graphics.draw(playerImage, player.x, player.y,
 							math.atan2(love.mouse.getY()-player.y,
@@ -180,6 +231,10 @@ function love.draw()
 			love.graphics.rectangle("fill", enemies[i].x-enemies[i].width/2, enemies[i].y-enemies[i].height/2, enemies[i].width, enemies[i].height)
 		end
 
+		for i=1, #items do
+			love.graphics.circle("fill", items[i].x-items[i].width/2, items[i].y-items[i].height/2, items[i].width/2, 100)
+			--love.graphics.draw(incrementSizeImage, items[i].x-items[i].width/2, items[i].y-items[i].height/2, items[i].width, items[i].height)
+		end
 		for i=1, #bordersTop do
 			love.graphics.rectangle("fill", bordersTop[i].x-bordersTop[i].width/2, bordersTop[i].y-bordersTop[i].height/2, bordersTop[i].width, bordersTop[i].height)
 		end
@@ -195,8 +250,9 @@ function love.draw()
 		love.graphics.print("enemies: "..#enemies, 50,50)
 
 	elseif currentState == "gameover" then
+		backgroundSound:stop()
 		love.graphics.print("GameOver, press K to start again", 100, 100)
-		love.graphics.print("Score: " .. player.score, 20,200)
+		love.graphics.print("Score: " ..player.score, 20,200)
 	end
 
 
@@ -207,18 +263,17 @@ function clean()
 	for i=1, #enemies do
 		if enemies[i].x==-20 then
 			table.remove(enemies, enemies[i])
-		end			
+		end
 	end
 	for i=1, #bordersTop do
 		if bordersTop[i].x==-20 then
 			table.remove(bordersTop, bordersTop[i])
-		end			
+		end
 	end
 	for i=1, #bordersDown do
 		if bordersDown[i].x==-20 then
 			table.remove(bordersDown, bordersDown[i])
-		end			
+		end
 	end
 
 end
-
