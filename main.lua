@@ -20,7 +20,6 @@ function love.load()
 
   playerImage = love.graphics.newImage("nave.png")
   backgroundImage = love.graphics.newImage("background.jpg")
-  bulletImage = love.graphics.newImage("bullet.png")
   enemyImage = love.graphics.newImage("enemy.png")
 
   coolFont = love.graphics.newFont("ProggySquareTT.ttf", 40)
