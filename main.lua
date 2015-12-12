@@ -16,8 +16,8 @@ function startGame()
 	enemySize=20
 	borders={}
 	ratio=1
-
-
+	items = {}
+	itemsSpeed=100
 end
 
 function love.load()
