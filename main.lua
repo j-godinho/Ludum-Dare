@@ -34,7 +34,7 @@ function love.load()
   startGame()
 
   playerImage = love.graphics.newImage("6.png")
-  backgroundImage = love.graphics.newImage("background2.png")
+  backgroundImage = love.graphics.newImage("background2.jpg")
 	incrementSizeImage = love.graphics.newImage("incrSize.png")
   coolFont = love.graphics.newFont("ProggySquareTT.ttf", 40)
   love.graphics.setFont(coolFont)
@@ -42,7 +42,7 @@ function love.load()
 end
 
 function getNewBackground()
-	number = love.math.random(1, 5)
+	number = love.math.random(1, 7)
 	backgroundImage = love.graphics.newImage("background"..number..".jpg")
 end
 
@@ -66,7 +66,7 @@ function love.update(dt)
 	end
 
 	enemySize = enemySize + 10
-	if timeCount == 50 then
+	if timeCount == 10 then
 		getNewBackground()
 		--getNewEnemyColor()
 		timeCount = 0
