@@ -8,18 +8,19 @@ end
 
 -- Funcao que inicializa as variaveis do jogo
 function startGame()
-	player = {x=300, y=400, score=0, speed=200, bulletSpeed=400}
+	player = {x=300, y=300, score=0, speed=400, bulletSpeed=400}
+	gravitySpeed = 200
 	enemies = {}
 	enemySpeed=100
-	currentState = "game"
+	currentState = "verticalGame"
 end
 
 function love.load()
   startGame()
 
-  playerImage = love.graphics.newImage("nave.png")
+  playerImage = love.graphics.newImage("6.png")
   backgroundImage = love.graphics.newImage("background.jpg")
-	bulletImage = love.graphics.newImage("bullet.png")
+
   enemyImage = love.graphics.newImage("enemy.png")
 
   coolFont = love.graphics.newFont("ProggySquareTT.ttf", 40)
@@ -28,22 +29,31 @@ function love.load()
 end
 
 function love.update(dt)
-	if currentState == "game" then
+	if currentState == "verticalGame" then
 		--Detectar Input
-		if love.keyboard.isDown("w") and player.y>0 then
+
+		if player.y>love.graphics.getHeight()/2 and player.y<love.graphics.getHeight()then
+			player.y=player.y+gravitySpeed*dt
+		end
+
+		if player.y<=love.graphics.getHeight()/2 and player.y>0 then
+				player.y=player.y-gravitySpeed*dt
+		end
+		if love.keyboard.isDown("up") and player.y>0 then
 			player.y=player.y-player.speed*dt
 		end
-		if love.keyboard.isDown("a") and player.x>0 then
-			player.x=player.x-player.speed*dt
-		end
-		if love.keyboard.isDown("s") and player.y<love.graphics.getHeight() then
+
+
+		if love.keyboard.isDown("down") and player.y<love.graphics.getHeight() then
 			player.y=player.y+player.speed*dt
 		end
-		if love.keyboard.isDown("d") and player.x<love.graphics.getWidth() then
-			player.x=player.x+player.speed*dt
+
+		if love.keyboard.isDown("c")then
+			currentState = "horizontalGame"
 		end
 
 
+		--[[
 		if math.random() < 0.05 then
 			local newEnemy = {x=math.random()*800 , y= 100}
 			table.insert(enemies, newEnemy)
@@ -70,20 +80,42 @@ function love.update(dt)
 			elseif enemies[i].y>player.y then
 				enemies[i].y=enemies[i].y-enemySpeed*dt
 			end
+		end--]]
+
+	elseif (currentState =="horizontalGame")then
+		if player.x>love.graphics.getWidth()/2 and player.x<love.graphics.getWidth()then
+			player.x=player.x+gravitySpeed*dt
+		end
+
+		if player.x<=love.graphics.getWidth()/2 and player.y>0 then
+				player.x=player.x-gravitySpeed*dt
+		end
+
+		if love.keyboard.isDown("left") and player.x>0 then
+			player.x=player.x-player.speed*dt
+		end
+		if love.keyboard.isDown("right") and player.x<love.graphics.getWidth() then
+			player.x=player.x+player.speed*dt
+		end
+
+		if love.keyboard.isDown("c")then
+			currentState = "verticalGame"
 		end
 	elseif(currentState=="gameover")then
 		if love.keyboard.isDown("k") then
 			startGame()
 		end
+
 	end
 end
 
 function love.draw()
-	if currentState == "game" then
+	if currentState == "horizontalGame" or currentState == "verticalGame" then
 		love.graphics.draw(backgroundImage, 0, 0)
 		love.graphics.draw(playerImage, player.x, player.y,
 							math.atan2(love.mouse.getY()-player.y,
-							love.mouse.getX()-player.x),1,1, playerImage:getWidth()/2, playerImage:getHeight()/2)
+							love.mouse.getX()-player.x),1,1, playerImage:getWidth()/2,
+							playerImage:getHeight()/2)
 
 		for i=1, #enemies do
 			love.graphics.draw(enemyImage, enemies[i].x, enemies[i].y, math.atan2(player.y-enemies[i].y,player.x-enemies[i].x)+math.pi)
