@@ -28,6 +28,9 @@ function startGame()
 	looseCount = 0
 	backgroundSound = love.audio.newSource("Careless.mp3")
 	backgroundSound:play()
+
+	pickupSound = love.audio.newSource("pickup.wav")
+
 end
 
 function love.load()
@@ -163,7 +166,7 @@ function love.update(dt)
 
 		for i=#items, 1, -1 do
 			if checkCollision(items[i].x, items[i].y, items[i].width, items[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
-
+					pickupSound:play()
 					table.remove(items, i)
 					incrementSize()
 			end
