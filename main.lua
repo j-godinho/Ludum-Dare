@@ -76,9 +76,8 @@ function love.update(dt)
 		end
 
 
-		
 		if math.random() < 0.05 then
-			local newEnemy = {x=math.random()*800 , y= 100}
+			local newEnemy = {x=800 , y= math.random()*800, width=20, height=20}
 			table.insert(enemies, newEnemy)
 		end
 
@@ -90,6 +89,11 @@ function love.update(dt)
 
 			end
 		end
+
+		for i=1, #enemies do
+			enemies[i].x=enemies[i].x-enemySpeed*dt
+		end
+
 
 		local newBorderTop = {x=800, y=0, width=5, height=50*math.random()}
 		table.insert(borders, newBorderTop)
