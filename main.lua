@@ -65,6 +65,12 @@ function deacreaseSpeed()
 end
 function love.update(dt)
 	timeCount = timeCount + 1
+  if player.imune then
+
+  end
+  if looseTime == 30 then
+
+  end
 	if verticalBoolean then
 		verticalCount = verticalCount + 1
 	end
@@ -213,6 +219,7 @@ function love.update(dt)
 		local looseTime = 0
 
 		player.immune = true
+
 
 		looseCount = looseCount + 1
 		if looseCount == 30 then
