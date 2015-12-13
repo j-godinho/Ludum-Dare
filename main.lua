@@ -30,6 +30,8 @@ function startGame()
 	scaleX=1
 	scaleY=1
 	looseTime =0
+	gravitySound = love.audio.newSource("gravity.wav")
+	
 
 end
 
@@ -91,6 +93,7 @@ function love.update(dt)
 			timeCount = 0
 		end
 		if verticalCount == 350 then
+			gravitySound:play()
 			verticalBoolean = false
 			horizontalBoolean = true
 			currentState = "horizontalGame"
@@ -218,6 +221,18 @@ function love.update(dt)
 
 			clean()
 
+			if player.x<=0 then
+				if player.lifes > 1 then
+					player.lifes = player.lifes - 1
+					player.x = love.graphics.getWidth()/2
+					player.y= love.graphics.getHeight()/2
+					currentState = "looseLife"
+
+				elseif player.lifes == 1 then
+					currentState="gameover"
+				end
+			end
+
 
 		if currentState=="looseLife" then
 			looseTime = looseTime + dt
@@ -234,6 +249,9 @@ function love.update(dt)
 				currentState = "verticalGame"
 			end
 		end
+
+
+
 	end
 end
 
