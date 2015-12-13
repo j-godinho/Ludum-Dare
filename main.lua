@@ -54,6 +54,7 @@ end
 function incrementSize()
 	scaleX=scaleX+0.05
 	scaleY=scaleY+0.05
+  	
 end
 
 function incrementSpeed()
@@ -109,6 +110,10 @@ function love.update(dt)
 		if (love.keyboard.isDown("down") or love.keyboard.isDown("s")) and player.y<love.graphics.getHeight() then
 			player.y=player.y+player.speed*dt
 		end
+
+    --if (love.keyboard.isDown("up") or love.keyboard.isDown("w")) and (love.keyboard.isDown("down") or love.keyboard.isDown("s")) then
+      --player.y = math.abs(player.y - love.graphics.getHeight())
+    --end
 
 		if love.keyboard.isDown("c")then
 			currentState = "horizontalGame"
