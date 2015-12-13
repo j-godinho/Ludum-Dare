@@ -31,6 +31,7 @@ function startGame()
 	scaleY=1
 	looseTime =0
 	gravitySound = love.audio.newSource("gravity.wav")
+
 	
 
 end
@@ -250,8 +251,6 @@ function love.update(dt)
 			end
 		end
 
-
-
 	end
 end
 
@@ -269,10 +268,12 @@ function love.draw()
 			love.graphics.setColor(math.random()*255, math.random()*255, math.random()*255)
 			love.graphics.rectangle("fill", enemies[i].x-enemies[i].width/2, enemies[i].y-enemies[i].height/2, enemies[i].width, enemies[i].height)
 		end
+
 		love.graphics.setColor(255,255,255)
 		for i=1, #items do
-			love.graphics.circle("fill", items[i].x-items[i].width/2, items[i].y-items[i].height/2, items[i].width/2, 100)
-			--love.graphics.draw(incrementSizeImage, items[i].x-items[i].width/2, items[i].y-items[i].height/2, items[i].width, items[i].height)
+			love.graphics.draw(incrementSizeImage,items[i].x-items[i].width/2, items[i].y-items[i].height/2,0,0.25,0.25, items[i].width/2, items[i].height)
+
+			--love.graphics.draw(incrementSizeImage, items[i].x-items[i].width/2, items[i].y-items[i].height/2, items[i].width/2, items[i].height)
 		end
 		for i=1, #bordersTop do
 			love.graphics.rectangle("fill", bordersTop[i].x-bordersTop[i].width/2, bordersTop[i].y-bordersTop[i].height/2, bordersTop[i].width, bordersTop[i].height)
