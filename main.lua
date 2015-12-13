@@ -54,7 +54,7 @@ end
 function incrementSize()
 	scaleX=scaleX+0.05
 	scaleY=scaleY+0.05
-  	
+
 end
 
 function incrementSpeed()
