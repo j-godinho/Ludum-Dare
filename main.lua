@@ -12,7 +12,7 @@ function startGame()
 	gravitySpeed = 200
 	enemies = {}
 	enemySpeed=100
-	currentState = "verticalGame"
+	currentState = "entrance"
 	enemySize=20
 	bordersTop={}
 	bordersDown={}
@@ -27,7 +27,6 @@ function startGame()
 	horizontalBoolean = false
 	looseCount = 0
 	backgroundSound = love.audio.newSource("Careless.mp3")
-	backgroundSound:play()
 	scaleX=1
 	scaleY=1
 	looseTime =0
@@ -36,13 +35,15 @@ end
 
 function love.load()
 
-  startGame()
+  	startGame()
 
   	playerImage = love.graphics.newImage("6.png")
   	backgroundImage = love.graphics.newImage("background2.jpg")
 	incrementSizeImage = love.graphics.newImage("incrSize.png")
   	coolFont = love.graphics.newFont("ProggySquareTT.ttf", 40)
   	love.graphics.setFont(coolFont)
+
+
 
 end
 
@@ -64,163 +65,178 @@ function deacreaseSpeed()
 	player.speed = player.speed - 50
 end
 function love.update(dt)
-	timeCount = timeCount + 1
-	if verticalBoolean then
-		verticalCount = verticalCount + 1
-	end
-	if horizontalBoolean then
-		horizontalCount = horizontalCount + 1
-	end
-
-	enemySize = enemySize + 10
-	if timeCount == 10 then
-		getNewBackground()
-		--getNewEnemyColor()
-		timeCount = 0
-	end
-	if verticalCount == 350 then
-		verticalBoolean = false
-		horizontalBoolean = true
-		currentState = "horizontalGame"
-		verticalCount = 0
-	end
-
-	if horizontalCount == 70 then
-		horizontalBoolean = false
-		verticalBoolean=true
-		currentState = "verticalGame"
-		horizontalCount = 0
-	end
-
-	if currentState == "verticalGame" then
-		--Detectar Input
-		player.score = player.score + 1
-		if player.y>love.graphics.getHeight()/2 and player.y<love.graphics.getHeight()then
-			player.y=player.y+gravitySpeed*dt
-		end
-
-		if player.y<=love.graphics.getHeight()/2 and player.y>0 then
-				player.y=player.y-gravitySpeed*dt
-		end
-		if (love.keyboard.isDown("up") or love.keyboard.isDown("w")) and player.y>0 then
-			player.y=player.y-player.speed*dt
+	if currentState == "entrance" then
+		if (love.keyboard.isDown("up") and love.keyboard.isDown("down")) then
+				backgroundSound:play()
+				currentState = "verticalGame"
+		elseif  (love.keyboard.isDown("w") and love.keyboard.isDown("s")) then
+				backgroundSound:play()
+				currentState = "verticalGame"
 		end
 
 
-		if (love.keyboard.isDown("down") or love.keyboard.isDown("s")) and player.y<love.graphics.getHeight() then
-			player.y=player.y+player.speed*dt
+	else
+		timeCount = timeCount + 1
+		if verticalBoolean then
+			verticalCount = verticalCount + 1
+		end
+		if horizontalBoolean then
+			horizontalCount = horizontalCount + 1
 		end
 
-    --if (love.keyboard.isDown("up") or love.keyboard.isDown("w")) and (love.keyboard.isDown("down") or love.keyboard.isDown("s")) then
-      --player.y = math.abs(player.y - love.graphics.getHeight())
-    --end
-
-		if love.keyboard.isDown("c")then
+		enemySize = enemySize + 10
+		if timeCount == 10 then
+			getNewBackground()
+			--getNewEnemyColor()
+			timeCount = 0
+		end
+		if verticalCount == 350 then
+			verticalBoolean = false
+			horizontalBoolean = true
 			currentState = "horizontalGame"
-		end
-	elseif (currentState =="horizontalGame")then
-		if player.x>love.graphics.getWidth()/2 and player.x<love.graphics.getWidth()then
-			player.x=player.x+gravitySpeed*dt
+			verticalCount = 0
 		end
 
-		if player.x<=love.graphics.getWidth()/2 and player.y>0 then
-				player.x=player.x-gravitySpeed*dt
-		end
-
-		if (love.keyboard.isDown("left") or love.keyboard.isDown("a")) and player.x>0 then
-			player.x=player.x-player.speed*dt
-		end
-		if (love.keyboard.isDown("right") or love.keyboard.isDown("d")) and player.x<love.graphics.getWidth() then
-			player.x=player.x+player.speed*dt
-		end
-
-		if love.keyboard.isDown("c")then
+		if horizontalCount == 70 then
+			horizontalBoolean = false
+			verticalBoolean=true
 			currentState = "verticalGame"
+			horizontalCount = 0
 		end
 
-	elseif(currentState=="gameover")then
-		if love.keyboard.isDown("k") then
-			startGame()
+		if currentState == "verticalGame" then
+			--Detectar Input
+			player.score = player.score + 1
+			if player.y>love.graphics.getHeight()/2 and player.y<love.graphics.getHeight()then
+				player.y=player.y+gravitySpeed*dt
+			end
+
+			if player.y<=love.graphics.getHeight()/2 and player.y>0 then
+					player.y=player.y-gravitySpeed*dt
+			end
+			if (love.keyboard.isDown("up") or love.keyboard.isDown("w")) and player.y>0 then
+				player.y=player.y-player.speed*dt
+			end
+
+
+			if (love.keyboard.isDown("down") or love.keyboard.isDown("s")) and player.y<love.graphics.getHeight() then
+				player.y=player.y+player.speed*dt
+			end
+
+	    --if (love.keyboard.isDown("up") or love.keyboard.isDown("w")) and (love.keyboard.isDown("down") or love.keyboard.isDown("s")) then
+	      --player.y = math.abs(player.y - love.graphics.getHeight())
+	    --end
+
+			if love.keyboard.isDown("c")then
+				currentState = "horizontalGame"
+			end
+		elseif (currentState =="horizontalGame")then
+			if player.x>love.graphics.getWidth()/2 and player.x<love.graphics.getWidth()then
+				player.x=player.x+gravitySpeed*dt
+			end
+
+			if player.x<=love.graphics.getWidth()/2 and player.y>0 then
+					player.x=player.x-gravitySpeed*dt
+			end
+
+			if (love.keyboard.isDown("left") or love.keyboard.isDown("a")) and player.x>0 then
+				player.x=player.x-player.speed*dt
+			end
+			if (love.keyboard.isDown("right") or love.keyboard.isDown("d")) and player.x<love.graphics.getWidth() then
+				player.x=player.x+player.speed*dt
+			end
+
+			if love.keyboard.isDown("c")then
+				currentState = "verticalGame"
+			end
+
+		elseif(currentState=="gameover")then
+			if love.keyboard.isDown("k") then
+				startGame()
+			end
 		end
-	end
 
 
-		if math.random() < 0.05 then
-			local newEnemy = {x=800 , y= math.random()*800, width=20, height=20}
-			table.insert(enemies, newEnemy)
-		end
+			if math.random() < 0.05 then
+				local newEnemy = {x=800 , y= math.random()*800, width=20, height=20}
+				table.insert(enemies, newEnemy)
+			end
 
-		if math.random() < 0.05 then
-			local newItem = {x=800, y=math.random()*800, width=20, height=20}
-			table.insert(items, newItem)
-		end
+			if math.random() < 0.05 then
+				local newItem = {x=800, y=math.random()*800, width=20, height=20}
+				table.insert(items, newItem)
+			end
 
-		for i=#enemies,1,-1 do
-			if player.immune==false then
-				if checkCollision(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
-					--gameover
-					if player.lifes > 1 then
-						player.lifes = player.lifes - 1
-						player.x = love.graphics.getWidth()/2
-						player.y= love.graphics.getHeight()/2
-						currentState = "looseLife"
+			for i=#enemies,1,-1 do
+				if player.immune==false then
+					if checkCollision(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
+						--gameover
+						if player.lifes > 1 then
+							player.lifes = player.lifes - 1
+							player.x = love.graphics.getWidth()/2
+							player.y= love.graphics.getHeight()/2
+							currentState = "looseLife"
 
-					elseif player.lifes == 1 then
-						currentState="gameover"
+						elseif player.lifes == 1 then
+							currentState="gameover"
+						end
 					end
 				end
 			end
-		end
 
-		for i=#items, 1, -1 do
-			if checkCollision(items[i].x, items[i].y, items[i].width, items[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
-					pickupSound = love.audio.newSource("pickup.mp3")
-					pickupSound:play()
-					table.remove(items, i)
-					incrementSize()
+			for i=#items, 1, -1 do
+				if checkCollision(items[i].x, items[i].y, items[i].width, items[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
+						pickupSound = love.audio.newSource("pickup.mp3")
+						pickupSound:play()
+						table.remove(items, i)
+						incrementSize()
+				end
 			end
+
+			for i=1, #items do
+				items[i].x = items[i].x - itemsSpeed*dt
+			end
+
+
+			for i=1, #enemies do
+				enemies[i].x=enemies[i].x-enemySpeed*dt
+			end
+
+			local newBorderTop = {x=800, y=0, width=3, height=10}
+			table.insert(bordersTop, newBorderTop)
+
+
+			local newBorderDown = {x=800, y=600, width=3, height=10}
+			table.insert(bordersDown, newBorderDown)
+
+
+			for i=1, #bordersTop do
+				bordersTop[i].x=bordersTop[i].x-enemySpeed*dt
+			end
+
+			for i=1, #bordersDown do
+				bordersDown[i].x=bordersDown[i].x-enemySpeed*dt
+			end
+
+			clean()
+
+
+		if currentState=="looseLife" then
+			looseTime = looseTime + dt
+
+			player.immune = true
+			if looseTime == 300 then
+				player.imune=false
+				looseTime=0
+			end
+
+			looseCount = looseCount + 1
+			if looseCount == 30 then
+				looseCount=0
+				currentState = "verticalGame"
+			end
+
 		end
-
-		for i=1, #items do
-			items[i].x = items[i].x - itemsSpeed*dt
-		end
-
-
-		for i=1, #enemies do
-			enemies[i].x=enemies[i].x-enemySpeed*dt
-		end
-
-		local newBorderTop = {x=800, y=0, width=3, height=10}
-		table.insert(bordersTop, newBorderTop)
-
-
-		local newBorderDown = {x=800, y=600, width=3, height=10}
-		table.insert(bordersDown, newBorderDown)
-
-
-		for i=1, #bordersTop do
-			bordersTop[i].x=bordersTop[i].x-enemySpeed*dt
-		end
-
-		for i=1, #bordersDown do
-			bordersDown[i].x=bordersDown[i].x-enemySpeed*dt
-		end
-
-		clean()
-
-
-	if currentState=="looseLife" then
-		local looseTime = 0
-
-		player.immune = true
-
-		looseCount = looseCount + 1
-		if looseCount == 30 then
-			looseCount=0
-			currentState = "verticalGame"
-		end
-
-
 	end
 end
 
@@ -260,6 +276,14 @@ function love.draw()
 		backgroundSound:stop()
 		love.graphics.print("GameOver, press K to start again", 100, 100)
 		love.graphics.print("Score: " ..player.score, 20,200)
+	
+	elseif currentState == "entrance" then
+		love.graphics.print("<Insert Title>", 200,100)
+		love.graphics.print("Use Up/W And Down/S",150,200 )
+		love.graphics.print("But CAREFUL!",150,300 )
+		love.graphics.print("Sometimes Gravity Changes", 150,400)
+		love.graphics.print("But Controls Don't!", 150,500)
+		
 	end
 
 
