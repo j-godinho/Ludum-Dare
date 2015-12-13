@@ -124,6 +124,7 @@ function love.update(dt)
 			end
 
 
+
 			if love.keyboard.isDown("c")then
 				currentState = "horizontalGame"
 			end
