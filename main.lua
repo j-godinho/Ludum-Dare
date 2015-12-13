@@ -8,7 +8,7 @@ end
 
 -- Funcao que inicializa as variaveis do jogo
 function startGame()
-	player = {x=300, y=300, score=0, speed=400, bulletSpeed=400, lifes = 3}
+	player = {x=300, y=300, score=0, speed=400, bulletSpeed=400, lifes = 3, immune=false}
 	gravitySpeed = 200
 	enemies = {}
 	enemySpeed=100
@@ -28,8 +28,9 @@ function startGame()
 	looseCount = 0
 	backgroundSound = love.audio.newSource("Careless.mp3")
 	backgroundSound:play()
-
-	pickupSound = love.audio.newSource("pickup.wav")
+	scaleX=1
+	scaleY=1
+	looseTime =0
 
 end
 
@@ -37,11 +38,11 @@ function love.load()
 
   startGame()
 
-  playerImage = love.graphics.newImage("6.png")
-  backgroundImage = love.graphics.newImage("background2.jpg")
+  	playerImage = love.graphics.newImage("6.png")
+  	backgroundImage = love.graphics.newImage("background2.jpg")
 	incrementSizeImage = love.graphics.newImage("incrSize.png")
-  coolFont = love.graphics.newFont("ProggySquareTT.ttf", 40)
-  love.graphics.setFont(coolFont)
+  	coolFont = love.graphics.newFont("ProggySquareTT.ttf", 40)
+  	love.graphics.setFont(coolFont)
 
 end
 
@@ -51,7 +52,8 @@ function getNewBackground()
 end
 
 function incrementSize()
-
+	scaleX=scaleX+0.05
+	scaleY=scaleY+0.05
 end
 
 function incrementSpeed()
@@ -83,8 +85,8 @@ function love.update(dt)
 	end
 
 	if horizontalCount == 70 then
-		horizontalCount = false
-		verticalCount = true
+		horizontalBoolean = false
+		verticalBoolean=true
 		currentState = "verticalGame"
 		horizontalCount = 0
 	end
@@ -137,7 +139,6 @@ function love.update(dt)
 		end
 	end
 
-	if currentState == "verticalGame" then
 
 		if math.random() < 0.05 then
 			local newEnemy = {x=800 , y= math.random()*800, width=20, height=20}
@@ -150,22 +151,25 @@ function love.update(dt)
 		end
 
 		for i=#enemies,1,-1 do
-			if checkCollision(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
-				--gameover
-				if player.lifes > 1 then
-					player.lifes = player.lifes - 1
-					player.x = love.graphics.getWidth()/2
-					player.y= love.graphics.getHeight()/2
-					currentState = "looseLife"
+			if player.immune==false then
+				if checkCollision(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
+					--gameover
+					if player.lifes > 1 then
+						player.lifes = player.lifes - 1
+						player.x = love.graphics.getWidth()/2
+						player.y= love.graphics.getHeight()/2
+						currentState = "looseLife"
 
-				elseif player.lifes == 1 then
-					currentState="gameover"
+					elseif player.lifes == 1 then
+						currentState="gameover"
+					end
 				end
 			end
 		end
 
 		for i=#items, 1, -1 do
 			if checkCollision(items[i].x, items[i].y, items[i].width, items[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
+					pickupSound = love.audio.newSource("pickup.mp3")
 					pickupSound:play()
 					table.remove(items, i)
 					incrementSize()
@@ -197,38 +201,21 @@ function love.update(dt)
 			bordersDown[i].x=bordersDown[i].x-enemySpeed*dt
 		end
 
-		for i=#bordersDown,1,-1 do
-			if checkCollision(bordersDown[i].x, bordersDown[i].y, bordersDown[i].width, bordersDown[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
-				--gameover
-				if player.lifes > 1 then
-					player.lifes = player.lifes - 1
-				end
-			end
-		end
-
-		for i=#bordersTop,1,-1 do
-			if checkCollision(bordersTop[i].x, bordersTop[i].y, bordersTop[i].width, bordersTop[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
-				--gameover
-				if player.lifes > 1 then
-					player.lifes = player.lifes - 1
-				end
-			end
-		end
-
 		clean()
 
 
+	if currentState=="looseLife" then
+		local looseTime = 0
 
-	elseif currentState=="horizontalGame" then
+		player.immune = true
 
-	elseif currentState=="gameover" then
-
-	elseif currentState=="looseLife" then
-		looseCount = looseCount+1
-		if looseCount ==30 then
+		looseCount = looseCount + 1
+		if looseCount == 30 then
 			looseCount=0
 			currentState = "verticalGame"
 		end
+
+
 	end
 end
 
@@ -239,13 +226,14 @@ function love.draw()
 		love.graphics.draw(backgroundImage, 0, 0)
 		love.graphics.draw(playerImage, player.x, player.y,
 							math.atan2(love.mouse.getY()-player.y,
-							love.mouse.getX()-player.x),1,1, playerImage:getWidth()/2,
+							love.mouse.getX()-player.x),scaleX,scaleY, playerImage:getWidth()/2,
 							playerImage:getHeight()/2)
 
 		for i=1, #enemies do
+			love.graphics.setColor(math.random()*255, math.random()*255, math.random()*255)
 			love.graphics.rectangle("fill", enemies[i].x-enemies[i].width/2, enemies[i].y-enemies[i].height/2, enemies[i].width, enemies[i].height)
 		end
-
+		love.graphics.setColor(255,255,255)
 		for i=1, #items do
 			love.graphics.circle("fill", items[i].x-items[i].width/2, items[i].y-items[i].height/2, items[i].width/2, 100)
 			--love.graphics.draw(incrementSizeImage, items[i].x-items[i].width/2, items[i].y-items[i].height/2, items[i].width, items[i].height)
@@ -259,10 +247,9 @@ function love.draw()
 		end
 
 		love.graphics.print("Score: "..player.score, 20,20)
-		love.graphics.print("Jóias: "..player.lifes, 250, 20)
+		love.graphics.print("Lifes: "..player.lifes, 600, 20)
 
 
-		love.graphics.print("enemies: "..#enemies, 50,50)
 
 	elseif currentState == "gameover" then
 		backgroundSound:stop()
