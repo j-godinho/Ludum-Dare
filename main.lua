@@ -55,7 +55,7 @@ end
 function incrementSize()
 	scaleX=scaleX+0.05
 	scaleY=scaleY+0.05
-  	
+
 end
 
 function incrementSpeed()
@@ -73,6 +73,32 @@ function love.update(dt)
 				backgroundSound:play()
 				currentState = "verticalGame"
 		end
+	timeCount = timeCount + 1
+  if player.imune then
+
+  end
+  if looseTime == 30 then
+
+  end
+	if verticalBoolean then
+		verticalCount = verticalCount + 1
+	end
+	if horizontalBoolean then
+		horizontalCount = horizontalCount + 1
+	end
+
+	enemySize = enemySize + 10
+	if timeCount == 10 then
+		getNewBackground()
+		--getNewEnemyColor()
+		timeCount = 0
+	end
+	if verticalCount == 350 then
+		verticalBoolean = false
+		horizontalBoolean = true
+		currentState = "horizontalGame"
+		verticalCount = 0
+	end
 
 
 	else
@@ -119,9 +145,13 @@ function love.update(dt)
 			end
 
 
-			if (love.keyboard.isDown("down") or love.keyboard.isDown("s")) and player.y<love.graphics.getHeight() then
-				player.y=player.y+player.speed*dt
-			end
+
+		if (love.keyboard.isDown("up") or love.keyboard.isDown("w")) and player.x>0 then
+			player.x=player.x-player.speed*dt
+		end
+		if (love.keyboard.isDown("down") or love.keyboard.isDown("s")) and player.x<love.graphics.getWidth() then
+			player.x=player.x+player.speed*dt
+		end
 
 	    --if (love.keyboard.isDown("up") or love.keyboard.isDown("w")) and (love.keyboard.isDown("down") or love.keyboard.isDown("s")) then
 	      --player.y = math.abs(player.y - love.graphics.getHeight())
@@ -225,10 +255,7 @@ function love.update(dt)
 			looseTime = looseTime + dt
 
 			player.immune = true
-			if looseTime == 300 then
-				player.imune=false
-				looseTime=0
-			end
+
 
 			looseCount = looseCount + 1
 			if looseCount == 30 then
