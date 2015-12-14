@@ -8,7 +8,7 @@ end
 
 -- Funcao que inicializa as variaveis do jogo
 function startGame()
-	player = {x=300, y=300, score=0, speed=400, bulletSpeed=400, lifes = 3, immune=false}
+	player = {x=300, y=300, score=0, speed=400, bulletSpeed=400, lifes = 1, immune=false}
 	gravitySpeed = 200
 	enemies = {}
 	enemySpeed=100
@@ -33,6 +33,8 @@ function startGame()
 	gravitySound = love.audio.newSource("gravity.wav")
 	decrSpeedItems={}
 	incrSpeedItems={}
+  limitSpeedMax = 2000
+  limitSpeedMin = 200
 
 
 
@@ -67,10 +69,14 @@ function incrementSize()
 end
 
 function incrementSpeed()
-	player.speed = player.speed + 50
+  if player.speed < limitSpeedMax then
+	   player.speed = player.speed + 50
+  end
 end
 function decreaseSpeed()
-	player.speed = player.speed - 50
+  if player.speed > limitSpeedMin then
+	   player.speed = player.speed - 50
+  end
 end
 function changeGravityTimer(type)
   if type == 1 then
@@ -109,7 +115,7 @@ function love.update(dt)
 			--getNewEnemyColor()
 			timeCount = 0
 		end
-		if verticalCount == changeGravityTimer(1) then
+		if verticalCount == 350 then
 			gravitySound:play()
 			verticalBoolean = false
 			horizontalBoolean = true
@@ -117,7 +123,7 @@ function love.update(dt)
 			verticalCount = 0
 		end
 
-		if horizontalCount == changeGravityTimer(2) then
+		if horizontalCount == 70 then
 			horizontalBoolean = false
 			verticalBoolean=true
 			currentState = "verticalGame"
@@ -186,22 +192,22 @@ function love.update(dt)
 		end
 
 
-			if math.random() < 0.05 then
-				local newEnemy = {x=800 , y= math.random()*800, width=20, height=20}
+			if math.random() < 0.03 then
+				local newEnemy = {x=800 , y= math.random()*800, width=love.math.random(20,60), height=love.math.random(15,50)}
 				table.insert(enemies, newEnemy)
 			end
 
-			if math.random() < 0.05 then
-				local newItem = {x=800, y=math.random()*800, width=20, height=20}
+			if math.random() < 0.01 then
+				local newItem = {x=800, y=math.random()*800, width=15, height=15}
 				table.insert(items, newItem)
 			end
 
-			if math.random() < 0.05 then
+			if math.random() < 0.01 then
 				local decrSpeed = {x=800, y=math.random()*800, width=20, height=20}
 				table.insert(decrSpeedItems, decrSpeed)
 			end
 
-			if math.random() < 0.05 then
+			if math.random() < 0.02 then
 				local incrSpeed = {x=800, y=math.random()*800, width=20, height=20}
 				table.insert(incrSpeedItems, incrSpeed)
 			end
@@ -300,21 +306,20 @@ function love.update(dt)
 
 
 		if currentState=="looseLife" then
-			looseTime = looseTime + 1
+			--looseTime = looseTime + 1
 
 			player.immune = true
-
-
 			looseCount = looseCount + 1
 			if looseCount == 30 then
 				looseCount=0
 				currentState = "verticalGame"
+        player.imune = false
 			end
 
-      if looseTime == 20 then
-				player.imune=false
-				looseTime=0
-			end
+      --if looseTime == 20 then
+				--player.imune=false
+				--looseTime=0
+			--end
 		end
 
 	end
@@ -360,7 +365,7 @@ function love.draw()
 		end
 
 		love.graphics.print("Score: "..player.score, 20,20)
-		love.graphics.print("Lifes: "..player.lifes, 600, 20)
+		love.graphics.print("Best Score: 99999", 450, 20)
 
 
 
