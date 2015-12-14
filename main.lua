@@ -32,6 +32,7 @@ function startGame()
 	looseTime =0
 	gravitySound = love.audio.newSource("gravity.wav")
 	decrSpeedItems={}
+	incrSpeedItems={}
 
 
 
@@ -49,6 +50,7 @@ function love.load()
 
   	incrementSpeedImage = love.graphics.newImage("incrSpeed.png")
   	decrSpeedImage = love.graphics.newImage("decrSpeed.png")
+  	incrSpeedImage = love.graphics.newImage("incrSpeed.png")
 
 
 end
@@ -65,7 +67,7 @@ function incrementSize()
 end
 
 function incrementSpeed()
-	player.speed = player.speed + 100
+	player.speed = player.speed + 50
 end
 function decreaseSpeed()
 	player.speed = player.speed - 50
@@ -195,10 +197,14 @@ function love.update(dt)
 			end
 
 			if math.random() < 0.05 then
-				local incrSpeed = {x=800, y=math.random()*800, width=20, height=20}
-				table.insert(decrSpeedItems, incrSpeed)
+				local decrSpeed = {x=800, y=math.random()*800, width=20, height=20}
+				table.insert(decrSpeedItems, decrSpeed)
 			end
 
+			if math.random() < 0.05 then
+				local incrSpeed = {x=800, y=math.random()*800, width=20, height=20}
+				table.insert(incrSpeedItems, incrSpeed)
+			end
 
 			for i=#enemies,1,-1 do
 				if player.immune==false then
@@ -256,7 +262,7 @@ function love.update(dt)
 				if checkCollision(decrSpeedItems[i].x, decrSpeedItems[i].y, decrSpeedItems[i].width, decrSpeedItems[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
 						pickupSound = love.audio.newSource("pickup.mp3")
 						pickupSound:play()
-						table.remove(items, i)
+						table.remove(decrSpeedItems, i)
 						decreaseSpeed()
 				end
 			end
@@ -264,6 +270,20 @@ function love.update(dt)
 			for i=1, #decrSpeedItems do
 				decrSpeedItems[i].x=decrSpeedItems[i].x-enemySpeed*dt
 			end
+
+			for i=#incrSpeedItems, 1, -1 do
+				if checkCollision(incrSpeedItems[i].x, incrSpeedItems[i].y, incrSpeedItems[i].width, incrSpeedItems[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
+						pickupSound = love.audio.newSource("pickup.mp3")
+						pickupSound:play()
+						table.remove(incrSpeedItems, i)
+						incrementSpeed()
+				end
+			end
+
+			for i=1, #incrSpeedItems do
+				incrSpeedItems[i].x=incrSpeedItems[i].x-enemySpeed*dt
+			end
+
 
 
 			if player.x<=0 then
@@ -334,6 +354,11 @@ function love.draw()
 		for i=1, #decrSpeedItems do
 			love.graphics.draw(decrSpeedImage,decrSpeedItems[i].x-decrSpeedItems[i].width/2, decrSpeedItems[i].y-decrSpeedItems[i].height/2,0,1,1, decrSpeedItems[i].width/2, decrSpeedItems[i].height)
 		end
+
+		for i=1, #incrSpeedItems do
+			love.graphics.draw(incrSpeedImage,incrSpeedItems[i].x-incrSpeedItems[i].width/2, incrSpeedItems[i].y-incrSpeedItems[i].height/2,0,1,1, incrSpeedItems[i].width/2, incrSpeedItems[i].height)
+		end
+
 		love.graphics.print("Score: "..player.score, 20,20)
 		love.graphics.print("Lifes: "..player.lifes, 600, 20)
 
