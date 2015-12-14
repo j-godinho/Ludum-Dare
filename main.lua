@@ -135,21 +135,25 @@ function love.update(dt)
 		if currentState == "verticalGame" then
 			--Detectar Input
 			player.score = player.score + 1
-			if player.y>love.graphics.getHeight()/2 and player.y<love.graphics.getHeight()then
+			if player.y>love.graphics.getHeight()/2 and player.y + playerImage:getWidth()/2 + 5<love.graphics.getHeight()then
 				player.y=player.y+gravitySpeed*dt
 			end
 
-			if player.y <=love.graphics.getHeight()/2 and player.y>0 then
+			if player.y <=love.graphics.getHeight()/2 and player.y -(playerImage:getWidth() - 10)>0 then
 					player.y=player.y-gravitySpeed*dt
 			end
 			if (love.keyboard.isDown("up") or love.keyboard.isDown("w")) and player.y>0 then
-				player.y=player.y-player.speed*dt
-			end
+        if player.y - (playerImage:getWidth() -10)> 0 then
+          player.y=player.y-player.speed*dt
+        end
+      end
 
 
 			if (love.keyboard.isDown("down") or love.keyboard.isDown("s")) and player.y<love.graphics.getHeight() then
-				player.y=player.y+player.speed*dt
-			end
+        if player.y  + playerImage:getWidth() < love.graphics.getHeight() then
+          player.y=player.y+player.speed*dt
+        end
+      end
 
 
 
