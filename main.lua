@@ -370,11 +370,10 @@ function love.draw()
 		love.graphics.print("Best Score: 99999", 450, 20)
 
 
-
 	elseif currentState == "gameover" then
 		backgroundSound:stop()
-		love.graphics.print("GameOver, press K to start again", 100, 100)
-		love.graphics.print("Score: " ..player.score, 20,200)
+		love.graphics.print("GameOver, press K to start again", 110, 250)
+		love.graphics.print("Score: " ..player.score, 350,300)
 
 	elseif currentState == "entrance" then
 		love.graphics.print("LD34Winner", 250,50,0,2,2)
