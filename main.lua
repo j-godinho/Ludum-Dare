@@ -94,10 +94,10 @@ end
 function love.update(dt)
 
 	if currentState == "entrance" then
-		if (love.keyboard.isDown("up") and love.keyboard.isDown("down")) then
+		if (love.keyboard.isDown("a") or love.keyboard.isDown("d")) then
 				backgroundSound:play()
 				currentState = "verticalGame"
-		elseif  (love.keyboard.isDown("w") and love.keyboard.isDown("s")) then
+		elseif  (love.keyboard.isDown("w") or love.keyboard.isDown("s")) then
 				backgroundSound:play()
 				currentState = "verticalGame"
 
@@ -377,11 +377,11 @@ function love.draw()
 		love.graphics.print("Score: " ..player.score, 20,200)
 
 	elseif currentState == "entrance" then
-		love.graphics.print("LD34Winner", 200,100)
-		love.graphics.print("Use Up/W And Down/S",150,200 )
-		love.graphics.print("But CAREFUL!",150,300 )
-		love.graphics.print("Sometimes Gravity Changes", 150,400)
-		love.graphics.print("And Controls Change to A/left and D/right!", 20,500)
+		love.graphics.print("LD34Winner", 250,50,0,2,2)
+		love.graphics.print("Use W/S or A/D to advance on our",150,200 )
+		love.graphics.print("Gravity Field, but be aware!",150,300 )
+		love.graphics.print("Sometimes the Force changes", 150,400)
+		love.graphics.print("May the force be with you!", 150,500)
 
   elseif currentState == "looseLife" then
     love.graphics.print("Imune", 300, 300)
