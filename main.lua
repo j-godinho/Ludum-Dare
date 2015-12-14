@@ -370,11 +370,11 @@ function love.draw()
 		love.graphics.print("Score: " ..player.score, 20,200)
 
 	elseif currentState == "entrance" then
-		love.graphics.print("<Insert Title>", 200,100)
+		love.graphics.print("LD34Winner", 200,100)
 		love.graphics.print("Use Up/W And Down/S",150,200 )
 		love.graphics.print("But CAREFUL!",150,300 )
 		love.graphics.print("Sometimes Gravity Changes", 150,400)
-		love.graphics.print("But Controls Don't!", 150,500)
+		love.graphics.print("And Controls Change to A/left and D/right!", 20,500)
 
   elseif currentState == "looseLife" then
     love.graphics.print("Imune", 300, 300)
