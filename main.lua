@@ -32,7 +32,7 @@ function startGame()
 	looseTime =0
 	gravitySound = love.audio.newSource("gravity.wav")
 
-	
+
 
 end
 
@@ -67,6 +67,17 @@ end
 function deacreaseSpeed()
 	player.speed = player.speed - 50
 end
+function changeGravityTimer(type)
+  if type == 1 then
+    number = love.math.random(300, 600)
+    return number
+
+  else
+    number2 = love.math.random(50, 100)
+    return number2
+  end
+
+end
 function love.update(dt)
 
 	if currentState == "entrance" then
@@ -93,7 +104,7 @@ function love.update(dt)
 			--getNewEnemyColor()
 			timeCount = 0
 		end
-		if verticalCount == 350 then
+		if verticalCount == changeGravityTimer(1) then
 			gravitySound:play()
 			verticalBoolean = false
 			horizontalBoolean = true
@@ -101,7 +112,7 @@ function love.update(dt)
 			verticalCount = 0
 		end
 
-		if horizontalCount == 70 then
+		if horizontalCount == changeGravityTimer(2) then
 			horizontalBoolean = false
 			verticalBoolean=true
 			currentState = "verticalGame"
@@ -151,6 +162,17 @@ function love.update(dt)
 			if love.keyboard.isDown("c")then
 				currentState = "verticalGame"
 			end
+      if(player.x < 0 or player.x>love.graphics.getWidth()) then
+        if player.lifes > 1 then
+          player.lifes = player.lifes - 1
+          player.x = love.graphics.getWidth()/2
+          player.y= love.graphics.getHeight()/2
+          currentState = "looseLife"
+
+        elseif player.lifes == 1 then
+          currentState="gameover"
+        end
+      end
 
 		elseif(currentState=="gameover")then
 			if love.keyboard.isDown("k") then
@@ -220,7 +242,7 @@ function love.update(dt)
 				bordersDown[i].x=bordersDown[i].x-enemySpeed*dt
 			end
 
-			clean()
+
 
 			if player.x<=0 then
 				if player.lifes > 1 then
@@ -236,22 +258,26 @@ function love.update(dt)
 
 
 		if currentState=="looseLife" then
-			looseTime = looseTime + dt
+			looseTime = looseTime + 1
 
 			player.immune = true
-			if looseTime == 300 then
-				player.imune=false
-				looseTime=0
-			end
+
 
 			looseCount = looseCount + 1
 			if looseCount == 30 then
 				looseCount=0
 				currentState = "verticalGame"
 			end
+
+      if looseTime == 20 then
+				player.imune=false
+				looseTime=0
+			end
 		end
 
 	end
+
+  clean()
 end
 
 
@@ -300,6 +326,8 @@ function love.draw()
 		love.graphics.print("Sometimes Gravity Changes", 150,400)
 		love.graphics.print("But Controls Don't!", 150,500)
 
+  elseif currentState == "looseLife" then
+    love.graphics.print("Imune", 300, 300)
 	end
 
 
