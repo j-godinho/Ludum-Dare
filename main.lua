@@ -31,6 +31,7 @@ function startGame()
 	scaleY=1
 	looseTime =0
 	gravitySound = love.audio.newSource("gravity.wav")
+	decrSpeedItems={}
 
 
 
@@ -46,6 +47,8 @@ function love.load()
   	coolFont = love.graphics.newFont("ProggySquareTT.ttf", 40)
   	love.graphics.setFont(coolFont)
 
+  	incrementSpeedImage = love.graphics.newImage("incrSpeed.png")
+  	decrSpeedImage = love.graphics.newImage("decrSpeed.png")
 
 
 end
@@ -64,7 +67,7 @@ end
 function incrementSpeed()
 	player.speed = player.speed + 100
 end
-function deacreaseSpeed()
+function decreaseSpeed()
 	player.speed = player.speed - 50
 end
 function changeGravityTimer(type)
@@ -191,6 +194,12 @@ function love.update(dt)
 				table.insert(items, newItem)
 			end
 
+			if math.random() < 0.05 then
+				local incrSpeed = {x=800, y=math.random()*800, width=20, height=20}
+				table.insert(decrSpeedItems, incrSpeed)
+			end
+
+
 			for i=#enemies,1,-1 do
 				if player.immune==false then
 					if checkCollision(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
@@ -226,6 +235,7 @@ function love.update(dt)
 				enemies[i].x=enemies[i].x-enemySpeed*dt
 			end
 
+
 			local newBorderTop = {x=800, y=0, width=3, height=10}
 			table.insert(bordersTop, newBorderTop)
 
@@ -242,6 +252,18 @@ function love.update(dt)
 				bordersDown[i].x=bordersDown[i].x-enemySpeed*dt
 			end
 
+			for i=#decrSpeedItems, 1, -1 do
+				if checkCollision(decrSpeedItems[i].x, decrSpeedItems[i].y, decrSpeedItems[i].width, decrSpeedItems[i].height, player.x, player.y, playerImage:getWidth(), playerImage:getHeight()) then
+						pickupSound = love.audio.newSource("pickup.mp3")
+						pickupSound:play()
+						table.remove(items, i)
+						decreaseSpeed()
+				end
+			end
+
+			for i=1, #decrSpeedItems do
+				decrSpeedItems[i].x=decrSpeedItems[i].x-enemySpeed*dt
+			end
 
 
 			if player.x<=0 then
@@ -309,6 +331,9 @@ function love.draw()
 			love.graphics.rectangle("fill", bordersDown[i].x-bordersDown[i].width/2, bordersDown[i].y-bordersDown[i].height/2, bordersDown[i].width, bordersDown[i].height)
 		end
 
+		for i=1, #decrSpeedItems do
+			love.graphics.draw(decrSpeedImage,decrSpeedItems[i].x-decrSpeedItems[i].width/2, decrSpeedItems[i].y-decrSpeedItems[i].height/2,0,1,1, decrSpeedItems[i].width/2, decrSpeedItems[i].height)
+		end
 		love.graphics.print("Score: "..player.score, 20,20)
 		love.graphics.print("Lifes: "..player.lifes, 600, 20)
 
