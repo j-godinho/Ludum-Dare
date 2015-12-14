@@ -27,14 +27,16 @@ function startGame()
 	horizontalBoolean = false
 	looseCount = 0
 	backgroundSound = love.audio.newSource("Careless.mp3")
+  backgroundSound: setLooping(true)
 	scaleX=1
 	scaleY=1
+  maxScale =3
 	looseTime =0
 	gravitySound = love.audio.newSource("gravity.wav")
 	decrSpeedItems={}
 	incrSpeedItems={}
   limitSpeedMax = 2000
-  limitSpeedMin = 200
+  limitSpeedMin = 250
 
 
 
@@ -46,7 +48,7 @@ function love.load()
 
   	playerImage = love.graphics.newImage("6.png")
   	backgroundImage = love.graphics.newImage("background2.jpg")
-	incrementSizeImage = love.graphics.newImage("incrSize.png")
+	  incrementSizeImage = love.graphics.newImage("incrSize.png")
   	coolFont = love.graphics.newFont("ProggySquareTT.ttf", 40)
   	love.graphics.setFont(coolFont)
 
@@ -137,7 +139,7 @@ function love.update(dt)
 				player.y=player.y+gravitySpeed*dt
 			end
 
-			if player.y<=love.graphics.getHeight()/2 and player.y>0 then
+			if player.y <=love.graphics.getHeight()/2 and player.y>0 then
 					player.y=player.y-gravitySpeed*dt
 			end
 			if (love.keyboard.isDown("up") or love.keyboard.isDown("w")) and player.y>0 then
