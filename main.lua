@@ -350,7 +350,7 @@ function love.draw()
 
 		love.graphics.setColor(255,255,255)
 		for i=1, #items do
-			love.graphics.draw(incrementSizeImage,items[i].x-items[i].width/2, items[i].y-items[i].height/2,0,0.25,0.25, items[i].width/2, items[i].height)
+			love.graphics.draw(incrementSizeImage,items[i].x-items[i].width/2, items[i].y-items[i].height/2,0,1,1, items[i].width/2, items[i].height)
 
 			--love.graphics.draw(incrementSizeImage, items[i].x-items[i].width/2, items[i].y-items[i].height/2, items[i].width/2, items[i].height)
 		end
