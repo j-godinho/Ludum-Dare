@@ -81,13 +81,20 @@ function decreaseSpeed()
   end
 end
 function changeGravityTimer(type)
+  number = love.math.random(1, 2)
   if type == 1 then
-    number = love.math.random(300, 600)
-    return number
+    if number == 1 then
+      return 350
+    else
+      return 500
+    end
 
   else
-    number2 = love.math.random(50, 100)
-    return number2
+    if number == 2 then
+      return 60
+    else
+      return 85
+    end
   end
 
 end
@@ -117,7 +124,7 @@ function love.update(dt)
 			--getNewEnemyColor()
 			timeCount = 0
 		end
-		if verticalCount == 350 then
+		if verticalCount == 400 then
 			gravitySound:play()
 			verticalBoolean = false
 			horizontalBoolean = true
@@ -198,22 +205,22 @@ function love.update(dt)
 		end
 
 
-			if math.random() < 0.03 then
+			if math.random() < 0.04 then
 				local newEnemy = {x=800 , y= math.random()*800, width=love.math.random(20,60), height=love.math.random(15,50)}
 				table.insert(enemies, newEnemy)
 			end
 
-			if math.random() < 0.01 then
+			if math.random() < 0.005 then
 				local newItem = {x=800, y=math.random()*800, width=15, height=15}
 				table.insert(items, newItem)
 			end
 
-			if math.random() < 0.01 then
+			if math.random() < 0.005 then
 				local decrSpeed = {x=800, y=math.random()*800, width=20, height=20}
 				table.insert(decrSpeedItems, decrSpeed)
 			end
 
-			if math.random() < 0.02 then
+			if math.random() < 0.01 then
 				local incrSpeed = {x=800, y=math.random()*800, width=20, height=20}
 				table.insert(incrSpeedItems, incrSpeed)
 			end
